@@ -7,6 +7,8 @@ type CartItem = {
 	id: string | number;
 	price: number;
 	quantity: number;
+	name: string;
+	images: string[];
 };
 
 type CartState = {
@@ -16,8 +18,8 @@ type CartState = {
 type CartContextType = {
 	items: CartItem[];
 	addToCart: (product: ProductProps) => void;
-	removeFromCart: (productId: string) => void;
-	updateQuantity: (productId: string, quantity: number) => void;
+	removeFromCart: (productId: string | number) => void;
+	updateQuantity: (productId: string | number, quantity: number) => void;
 	clearCart: () => void;
 	getCartTotal: () => number;
 	getCartItemsCount: () => number;
@@ -26,8 +28,8 @@ type CartContextType = {
 
 type CartAction =
 	| { type: 'ADD_TO_CART'; payload: ProductProps }
-	| { type: 'REMOVE_FROM_CART'; payload: string }
-	| { type: 'UPDATE_QUANTITY'; payload: { id: string; quantity: number } }
+	| { type: 'REMOVE_FROM_CART'; payload: string | number }
+	| { type: 'UPDATE_QUANTITY'; payload: { id: string | number; quantity: number } }
 	| { type: 'CLEAR_CART' }
 	| { type: 'LOAD_CART'; payload: CartItem[] };
 
@@ -100,11 +102,11 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
 		dispatch({ type: 'ADD_TO_CART', payload: product });
 	};
 
-	const removeFromCart = (productId: string) => {
+	const removeFromCart = (productId: string | number) => {
 		dispatch({ type: 'REMOVE_FROM_CART', payload: productId });
 	};
 
-	const updateQuantity = (productId: string, quantity: number) => {
+	const updateQuantity = (productId: string | number, quantity: number) => {
 		if (quantity <= 0) {
 			removeFromCart(productId);
 			return;
