@@ -120,7 +120,7 @@ export default function Footer() {
 
 				<div className="border-t mt-8 pt-8 flex flex-col md:flex-row justify-between items-center">
 					<p className="text-foreground text-sm">
-						© {new Date().getFullYear()} Beth's Place. All rights reserved.
+						© {new Date().getFullYear()} Beths Place. All rights reserved.
 					</p>
 					<div className="flex space-x-6 mt-4 md:mt-0">
 						<Link

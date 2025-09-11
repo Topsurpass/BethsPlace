@@ -18,7 +18,7 @@ const categories = [
 ];
 
 export default function ShopPage() {
-	const [products, _setProducts] = useState(mockProducts);
+	const [products, ] = useState(mockProducts);
 	const [filteredProducts, setFilteredProducts] = useState(mockProducts);
 	const [selectedCategory, setSelectedCategory] = useState<string | number>('all');
 	const [sortOption, setSortOption] = useState('featured');

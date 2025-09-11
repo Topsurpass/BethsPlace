@@ -5,10 +5,11 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { mockProducts } from '@/data/mock-products';
+import { ProductProps } from '@/types/products';
 
 const SearchBar: React.FC = () => {
 	const [query, setQuery] = useState('');
-	const [results, setResults] = useState<any[]>([]);
+	const [results, setResults] = useState<ProductProps[]>([]);
 	const [isOpen, setIsOpen] = useState(false);
 	const [debouncedQuery, setDebouncedQuery] = useState('');
 

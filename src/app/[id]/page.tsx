@@ -8,6 +8,7 @@ import ProductInfo from '@/components/Homepage/products/product-info';
 import ProductReviews from '@/components/Homepage/products/product-review';
 import RelatedProducts from '@/components/Homepage/products/related-products';
 import { mockProducts } from '@/data/mock-products';
+import Link from 'next/link';
 
 export default function ProductDetailPage() {
 	const params = useParams();
@@ -54,9 +55,9 @@ export default function ProductDetailPage() {
 				<nav className="text-sm text-gray-400 mb-8">
 					<ol className="flex space-x-2">
 						<li>
-							<a href="/" className="hover:text-gold transition-colors">
+							<Link href="/" className="hover:text-gold transition-colors">
 								Home
-							</a>
+							</Link>
 						</li>
 						<li className="before:content-['/'] before:mx-2">
 							<span className="text-gold-deep">{product.name}</span>

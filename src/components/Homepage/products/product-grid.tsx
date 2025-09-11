@@ -24,7 +24,7 @@ const ProductGrid: React.FC<ProductGridProps> = ({ products, onAddToCart }) => {
 				<ProductCard
 					key={product.id}
 					product={product}
-					onAddToCart={onAddToCart ?? ((product: ProductProps) => {})}
+					onAddToCart={onAddToCart ?? (() => {})}
 				/>
 			))}
 		</div>

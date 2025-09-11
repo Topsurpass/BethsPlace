@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { mockProducts } from '@/data/mock-products';
+import { ProductProps } from '@/types/products';
 
 interface SearchModalProps {
 	isOpen: boolean;
@@ -12,7 +13,7 @@ interface SearchModalProps {
 
 const SearchModal: React.FC<SearchModalProps> = ({ isOpen, onClose }) => {
 	const [query, setQuery] = useState('');
-	const [results, setResults] = useState<any[]>([]);
+	const [results, setResults] = useState<ProductProps[]>([]);
 	const [isLoading, setIsLoading] = useState(false);
 	const inputRef = useRef<HTMLInputElement>(null);
 
@@ -145,7 +146,7 @@ const SearchModal: React.FC<SearchModalProps> = ({ isOpen, onClose }) => {
 									/>
 								</svg>
 								<p className="text-gray-400 mt-2">
-									No products found for "{query}"
+									No products found for {query}
 								</p>
 							</div>
 						) : (

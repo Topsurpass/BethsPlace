@@ -8,7 +8,7 @@ import { Menu, X } from 'lucide-react';
 type SidebarItem = {
 	title: string;
 	url: string;
-	icon: ComponentType<any>;
+	icon: ComponentType<{ className?: string }>;
 };
 
 interface SidebarLayoutProps {
