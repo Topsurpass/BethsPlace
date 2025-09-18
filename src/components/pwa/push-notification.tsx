@@ -58,6 +58,7 @@ export function PushNotificationManager() {
 	async function sendTestNotification() {
 		if (subscription) {
 			await sendNotification(message);
+            // await sendNotification(JSON.stringify({ text: message }));
 			setMessage('');
 		}
 	}
@@ -70,22 +71,30 @@ export function PushNotificationManager() {
 		<div>
 			<h3>Push Notifications</h3>
 			{subscription ? (
-				<>
+				<div className="flex flex-col w-1/4 gap-3">
 					<p>You are subscribed to push notifications.</p>
-					<button onClick={unsubscribeFromPush}>Unsubscribe</button>
 					<input
 						type="text"
 						placeholder="Enter notification message"
 						value={message}
 						onChange={e => setMessage(e.target.value)}
+                        className="p-3 border"
 					/>
-					<button onClick={sendTestNotification}>Send Test</button>
-				</>
+					<button onClick={unsubscribeFromPush} className="border px-4 py-2">
+						Unsubscribe
+					</button>
+
+					<button onClick={sendTestNotification} className="border p-2">
+						Send Test
+					</button>
+				</div>
 			) : (
-				<>
+				<div className="flex flex-col w-1/4 gap-3">
 					<p>You are not subscribed to push notifications.</p>
-					<button onClick={subscribeToPush}>Subscribe</button>
-				</>
+					<button className="border px-4 py-2 " onClick={subscribeToPush}>
+						Subscribe
+					</button>
+				</div>
 			)}
 		</div>
 	);
