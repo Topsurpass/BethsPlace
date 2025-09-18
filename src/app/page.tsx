@@ -8,6 +8,8 @@ import { ProductProps } from '@/types/products';
 import HorizontalFilterBar from '@/components/Homepage/products/horizontal-fllter-bar';
 import HeroBanner from '@/components/Homepage/banners/hero-slider';
 import { bannerData } from '@/data/mock-banner';
+import { PushNotificationManager } from '@/components/pwa/push-notification';
+import { InstallPrompt } from '@/components/pwa/ios-install-prompt';
 
 const categories = [
 	{ id: 'all', name: 'All Bags' },
@@ -61,7 +63,7 @@ export default function ShopPage() {
 		<div className="min-h-screen pt-28">
 			<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
 				<div className="">
-					<HeroBanner banners={bannerData} autoRotate={true} rotateInterval={10000}/>
+					<HeroBanner banners={bannerData} autoRotate={true} rotateInterval={10000} />
 				</div>
 
 				<HorizontalFilterBar
@@ -83,6 +85,8 @@ export default function ShopPage() {
 
 				<ProductGrid products={filteredProducts} onAddToCart={handleAddToCart} />
 			</div>
+			<PushNotificationManager />
+			<InstallPrompt />
 		</div>
 	);
 }
