@@ -8,7 +8,7 @@ webpush.setVapidDetails(
 	process.env.VAPID_PRIVATE_KEY!,
 );
 
-let subscription: PushSubscription | null = null;
+let subscription: PushSubscription | null  = null;
 
 export async function subscribeUser(sub: PushSubscription) {
 	subscription = sub;
@@ -32,6 +32,7 @@ export async function sendNotification(message: string) {
 	try {
 		// Convert the browser PushSubscription to the plain object shape expected by web-push
 		await webpush.sendNotification(
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
 			(subscription as any).toJSON(),
 			JSON.stringify({
 				title: 'Test Notification',
