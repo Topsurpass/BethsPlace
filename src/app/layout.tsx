@@ -21,6 +21,11 @@ export const metadata: Metadata = {
 	title: 'BethsPlace | Premium Handmade Bags',
 	description:
 		'Discover exquisite handmade Nigerian bags that celebrate our rich cultural heritage and artisan traditions.',
+	manifest: '/manifest.json',
+	icons: {
+		icon: '/android/android-launchericon-192-192.png',
+		apple: '/ios/192.png',
+	},
 };
 
 export default function RootLayout({
@@ -29,15 +34,12 @@ export default function RootLayout({
 	children: React.ReactNode;
 }>) {
 	return (
-		<html lang="en">
+		<html lang="en" suppressHydrationWarning>
 			<head>
 				<link rel="manifest" href="/manifest.json" />
 				<meta name="theme-color" content="#ffffff" />
 			</head>
-			<body
-				className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-				suppressHydrationWarning
-			>
+			<body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
 				<Provider>
 					<div className="fixed top-0 left-0 right-0 z-50 bg-gold-deep ">
 						<TopNoticeBanner

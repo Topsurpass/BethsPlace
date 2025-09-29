@@ -33,11 +33,11 @@ export async function sendNotification(message: string) {
 		// Convert the browser PushSubscription to the plain object shape expected by web-push
 		await webpush.sendNotification(
 			// eslint-disable-next-line @typescript-eslint/no-explicit-any
-			(subscription as any),
+			subscription as any,
 			JSON.stringify({
 				title: 'Test Notification',
 				body: message,
-				icon: '/icon1.png',
+				icon: '/android/android-launchericon-512-512.png',
 			}),
 		);
 		return { success: true };

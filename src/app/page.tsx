@@ -8,8 +8,7 @@ import { ProductProps } from '@/types/products';
 import HorizontalFilterBar from '@/components/Homepage/products/horizontal-fllter-bar';
 import HeroBanner from '@/components/Homepage/banners/hero-slider';
 import { bannerData } from '@/data/mock-banner';
-import { PushNotificationManager } from '@/components/pwa/push-notification';
-import { InstallPrompt } from '@/components/pwa/ios-install-prompt';
+//import { NotificationInput } from '@/components/pwa/notification-input';
 
 const categories = [
 	{ id: 'all', name: 'All Bags' },
@@ -85,8 +84,7 @@ export default function ShopPage() {
 
 				<ProductGrid products={filteredProducts} onAddToCart={handleAddToCart} />
 			</div>
-			<PushNotificationManager />
-			<InstallPrompt />
+			{/*<NotificationInput />*/}
 		</div>
 	);
 }

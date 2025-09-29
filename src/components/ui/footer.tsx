@@ -1,22 +1,23 @@
 'use client';
 
 import Link from 'next/link';
-import { useState } from 'react';
+//import { useState } from 'react';
+import { PushNotificationManager } from '../pwa/push-notifiction-manager';
 
 export default function Footer() {
-	const [email, setEmail] = useState('');
-	const [isSubscribed, setIsSubscribed] = useState(false);
+	//const [email, setEmail] = useState('');
+	//const [isSubscribed, setIsSubscribed] = useState(false);
 
-	const handleSubscribe = (e: React.FormEvent) => {
-		e.preventDefault();
-		// In a real app, you would send this to your newsletter service
-		console.log('Subscribed with email:', email);
-		setIsSubscribed(true);
-		setEmail('');
+	//const handleSubscribe = (e: React.FormEvent) => {
+	//	e.preventDefault();
+	//	// In a real app, you would send this to your newsletter service
+	//	console.log('Subscribed with email:', email);
+	//	setIsSubscribed(true);
+	//	setEmail('');
 
-		// Reset after 3 seconds
-		setTimeout(() => setIsSubscribed(false), 3000);
-	};
+	//	// Reset after 3 seconds
+	//	setTimeout(() => setIsSubscribed(false), 3000);
+	//};
 
 	return (
 		<footer className="bg-background border-t border">
@@ -87,7 +88,8 @@ export default function Footer() {
 					</div>
 
 					<div className="flex-1 max-w-md">
-						<h3 className="text-foreground text-lg font-semibold mb-4">Stay Updated</h3>
+						<PushNotificationManager />
+						{/*<h3 className="text-foreground text-lg font-semibold mb-4">Stay Updated</h3>
 						<p className="foreground mb-4">
 							Subscribe to our newsletter for exclusive offers and new product
 							announcements.
@@ -114,14 +116,19 @@ export default function Footer() {
 									Subscribe
 								</button>
 							</form>
-						)}
+						)}*/}
 					</div>
 				</div>
 
 				<div className="border-t mt-8 pt-8 flex flex-col md:flex-row justify-between items-center">
-					<p className="text-foreground text-sm">
-						© {new Date().getFullYear()} Beths Place. All rights reserved.
-					</p>
+					<div className="text-center md:text-left">
+						<p className="text-foreground text-sm">
+							© {new Date().getFullYear()} Beths Place. All rights reserved.
+						</p>
+						<p className="text-gray-500 text-xs mt-1">
+							Crafted with tradition, made for modern life.
+						</p>
+					</div>	
 					<div className="flex space-x-6 mt-4 md:mt-0">
 						<Link
 							href="/privacy"
