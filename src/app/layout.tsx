@@ -21,6 +21,11 @@ export const metadata: Metadata = {
 	title: 'BethsPlace | Premium Handmade Bags',
 	description:
 		'Discover exquisite handmade Nigerian bags that celebrate our rich cultural heritage and artisan traditions.',
+	manifest: '/manifest.json',
+	icons: {
+		icon: '/android/android-launchericon-192-192.png',
+		apple: '/ios/192.png',
+	},
 };
 
 export default function RootLayout({
