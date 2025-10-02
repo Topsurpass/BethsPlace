@@ -14,19 +14,16 @@ export default function Header() {
 	return (
 		<header className=" w-full bg-background bg-opacity-90 border-b border">
 			<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-				<div className="flex justify-between items-center py-4">
-					<Link href="/" className="flex items-center">
-						<div className="relative w-10 h-10 mr-1">
+				<div className="flex justify-between items-center space-y-2">
+					<Link href="/" className="flex items-start">
+						<div className="relative w-16 h-10 md:w-25 md:h-18">
 							<Image
-								src="/logo.png"
+								src="/logo-name-gold.png"
 								alt="Nigerian Artisan Bags Logo"
 								fill
-								className="object-contain text-foreground"
+								className="object-contain"
 							/>
 						</div>
-						<span className="text-2xl font-bold text-foreground">
-							Beths<span className="text-gold-deep">Place</span>
-						</span>
 					</Link>
 
 					<div className="flex items-center space-x-4">

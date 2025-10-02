@@ -3,6 +3,9 @@
 	"short_name": "BethsPlace",
 	"description": "Premium Handmade Bags",
 	"start_url": "/",
+	"theme_color": "#000000",
+	"background_color": "#ffffff",
+	"display": "standalone",
 	"icons": [
 		{
 			"src": "windows11/SmallTile.scale-100.png",
@@ -452,8 +455,5 @@
 			"src": "ios/1024.png",
 			"sizes": "1024x1024"
 		}
-	],
-	"theme_color": "#ffffff",
-	"background_color": "#ffffff",
-	"display": "standalone"
+	]
 }

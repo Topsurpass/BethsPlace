@@ -23,8 +23,8 @@ export const metadata: Metadata = {
 		'Discover exquisite handmade Nigerian bags that celebrate our rich cultural heritage and artisan traditions.',
 	manifest: '/manifest.json',
 	icons: {
-		icon: '/android/android-launchericon-192-192.png',
-		apple: '/ios/192.png',
+		icon: '/android-chrome-192x192.png',
+		apple: '/ios/87.png',
 	},
 };
 
