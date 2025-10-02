@@ -16,7 +16,7 @@ export default function Header() {
 			<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 				<div className="flex justify-between items-center space-y-2">
 					<Link href="/" className="flex items-start">
-						<div className="relative w-16 h-10 md:w-25 md:h-18">
+						<div className="relative w-16 h-16 md:w-25 md:h-18">
 							<Image
 								src="/logo-name-gold.png"
 								alt="Nigerian Artisan Bags Logo"
