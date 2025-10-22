@@ -1,121 +1,207 @@
 'use client';
 
-import { ProductProps } from '@/types/products';
-import React, { createContext, useReducer, useEffect } from 'react';
+import React, { createContext, useContext, useEffect, useReducer } from 'react';
+import { useSession } from 'next-auth/react';
 
-type CartItem = {
-	id: string | number;
+export interface CartItem {
+	productId: string;
+	name: string;
 	price: number;
 	quantity: number;
-	name: string;
-	images: string[];
-};
+	images?: { url: string }[];
+	product?: any;
+}
 
-type CartState = {
+interface CartState {
 	items: CartItem[];
-};
-
-type CartContextType = {
-	items: CartItem[];
-	addToCart: (product: ProductProps) => void;
-	removeFromCart: (productId: string | number) => void;
-	updateQuantity: (productId: string | number, quantity: number) => void;
-	clearCart: () => void;
-	getCartTotal: () => number;
-	getCartItemsCount: () => number;
-};
-
+}
 
 type CartAction =
-	| { type: 'ADD_TO_CART'; payload: ProductProps }
-	| { type: 'REMOVE_FROM_CART'; payload: string | number }
-	| { type: 'UPDATE_QUANTITY'; payload: { id: string | number; quantity: number } }
-	| { type: 'CLEAR_CART' }
-	| { type: 'LOAD_CART'; payload: CartItem[] };
+	| { type: 'SET_CART'; payload: CartItem[] }
+	| { type: 'ADD_TO_CART'; payload: CartItem }
+	| { type: 'REMOVE_FROM_CART'; payload: string }
+	| { type: 'UPDATE_QUANTITY'; payload: { productId: string; quantity: number } }
+	| { type: 'CLEAR_CART' };
 
+const initialState: CartState = { items: [] };
 
-export const CartContext = createContext<CartContextType | undefined>(undefined);
-
-const cartReducer = (state: CartState, action: CartAction): CartState => {
+function reducer(state: CartState, action: CartAction): CartState {
 	switch (action.type) {
+		case 'SET_CART':
+			return { ...state, items: action.payload };
 		case 'ADD_TO_CART': {
-			const existingItem = state.items.find(item => item.id === action.payload.id);
-			if (existingItem) {
+			const existing = state.items.find(item => item.productId === action.payload.productId);
+			if (existing) {
 				return {
 					...state,
 					items: state.items.map(item =>
-						item.id === action.payload.id
+						item.productId === action.payload.productId
 							? { ...item, quantity: item.quantity + 1 }
 							: item,
 					),
 				};
 			}
+			return { ...state, items: [...state.items, { ...action.payload, quantity: 1 }] };
+		}
+		case 'REMOVE_FROM_CART':
 			return {
 				...state,
-				items: [...state.items, { ...action.payload, quantity: 1 }],
+				items: state.items.filter(item => item.productId !== action.payload),
 			};
-		}
-
-		case 'REMOVE_FROM_CART':
-			return { ...state, items: state.items.filter(item => item.id !== action.payload) };
-
 		case 'UPDATE_QUANTITY':
 			return {
 				...state,
 				items: state.items.map(item =>
-					item.id === action.payload.id
+					item.productId === action.payload.productId
 						? { ...item, quantity: action.payload.quantity }
 						: item,
 				),
 			};
-
 		case 'CLEAR_CART':
-			return { ...state, items: [] };
-
-		case 'LOAD_CART':
-			return { ...state, items: action.payload };
-
+			return { items: [] };
 		default:
 			return state;
 	}
-};
+}
 
-const initialState: CartState = {
-	items: [],
-};
+export const CartContext = createContext<any>(null);
 
 export const CartProvider = ({ children }: { children: React.ReactNode }) => {
-	const [state, dispatch] = useReducer(cartReducer, initialState);
+	const { data: session, status } = useSession();
+	const [state, dispatch] = useReducer(reducer, initialState);
 
 	useEffect(() => {
-		const savedCart = localStorage.getItem('cart');
-		if (savedCart) {
-			dispatch({ type: 'LOAD_CART', payload: JSON.parse(savedCart) });
-		}
-	}, []);
+		const mergeAndFetchCart = async () => {
+			if (status === 'authenticated') {
+				// Get guest cart before clearing
+				const guestCart = JSON.parse(localStorage.getItem('guest_cart') || '[]');
 
-	useEffect(() => {
-		localStorage.setItem('cart', JSON.stringify(state.items));
-	}, [state.items]);
+				if (guestCart.length > 0) {
+					await fetch('/api/cart/merge', {
+						method: 'POST',
+						headers: { 'Content-Type': 'application/json' },
+						credentials: 'include',
+						body: JSON.stringify({ guestCart }),
+					});
+					localStorage.removeItem('guest_cart');
+				}
 
-	const addToCart = (product: ProductProps) => {
-		dispatch({ type: 'ADD_TO_CART', payload: product });
+				// Fetch merged cart from backend
+				const res = await fetch('/api/cart', { credentials: 'include' });
+				const data = await res.json();
+				const formatted = data.map((item: any) => ({
+					productId: item.productId,
+					name: item.product.name,
+					price: item.product.price,
+					quantity: item.quantity,
+					images: item.product.images,
+				}));
+				dispatch({ type: 'SET_CART', payload: formatted });
+			} else if (status === 'unauthenticated') {
+				const local = localStorage.getItem('guest_cart');
+				if (local) {
+					dispatch({ type: 'SET_CART', payload: JSON.parse(local) });
+				}
+			}
+		};
+
+		mergeAndFetchCart();
+	}, [status]);
+
+	const syncGuestCart = (updated: CartItem[]) => {
+		localStorage.setItem('guest_cart', JSON.stringify(updated));
+		dispatch({ type: 'SET_CART', payload: updated });
 	};
 
-	const removeFromCart = (productId: string | number) => {
-		dispatch({ type: 'REMOVE_FROM_CART', payload: productId });
+	const addToCart = async (product: any) => {
+		const newItem: CartItem = {
+			productId: product.id,
+			name: product.name,
+			price: product.price,
+			quantity: 1,
+			images: product.images,
+		};
+
+		if (status === 'authenticated') {
+			await fetch('/api/cart', {
+				method: 'POST',
+				credentials: 'include',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({ productId: product.id, quantity: 1 }),
+			});
+			const res = await fetch('/api/cart', { credentials: 'include' });
+			const data = await res.json();
+			const formatted = data.map((item: any) => ({
+				productId: item.productId,
+				name: item.product.name,
+				price: item.product.price,
+				quantity: item.quantity,
+				images: item.product.images,
+			}));
+			dispatch({ type: 'SET_CART', payload: formatted });
+		} else {
+			const existing = state.items.find(i => i.productId === newItem.productId);
+			const updated = existing
+				? state.items.map(i =>
+						i.productId === newItem.productId ? { ...i, quantity: i.quantity + 1 } : i,
+					)
+				: [...state.items, newItem];
+			syncGuestCart(updated);
+		}
 	};
 
-	const updateQuantity = (productId: string | number, quantity: number) => {
-		if (quantity <= 0) {
-			removeFromCart(productId);
-			return;
+	const removeFromCart = async (productId: string) => {
+		if (status === 'authenticated') {
+			await fetch('/api/cart', {
+				method: 'DELETE',
+				credentials: 'include',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({ productId }),
+			});
+			const res = await fetch('/api/cart', { credentials: 'include' });
+			const data = await res.json();
+			const formatted = data.map((item: any) => ({
+				productId: item.productId,
+				name: item.product.name,
+				price: item.product.price,
+				quantity: item.quantity,
+				images: item.product.images,
+			}));
+			dispatch({ type: 'SET_CART', payload: formatted });
+		} else {
+			const updated = state.items.filter(item => item.productId !== productId);
+			syncGuestCart(updated);
 		}
+	};
 
-		dispatch({ type: 'UPDATE_QUANTITY', payload: { id: productId, quantity } });
+	const updateQuantity = async (productId: string, quantity: number) => {
+		if (status === 'authenticated') {
+			await fetch('/api/cart', {
+				method: 'PATCH',
+				credentials: 'include',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({ productId, quantity }),
+			});
+			const res = await fetch('/api/cart', { credentials: 'include' });
+			const data = await res.json();
+			const formatted = data.map((item: any) => ({
+				productId: item.productId,
+				name: item.product.name,
+				price: item.product.price,
+				quantity: item.quantity,
+				images: item.product.images,
+			}));
+			dispatch({ type: 'SET_CART', payload: formatted });
+		} else {
+			const updated = state.items.map(item =>
+				item.productId === productId ? { ...item, quantity } : item,
+			);
+			syncGuestCart(updated);
+		}
 	};
 
 	const clearCart = () => {
+		if (status === 'unauthenticated') localStorage.removeItem('guest_cart');
 		dispatch({ type: 'CLEAR_CART' });
 	};
 
@@ -143,4 +229,3 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
 		</CartContext.Provider>
 	);
 };
-

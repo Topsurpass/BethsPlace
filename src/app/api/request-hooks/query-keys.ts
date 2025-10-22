@@ -1,0 +1,6 @@
+enum QueryKeys {
+	GET_ALL_PRODUCTS = 'GET_ALL_PRODUCTS',
+	GET_PRODUCT_CATEGORIES = 'GET_PRODUCT_CATEGORIES',
+}
+
+export default QueryKeys;

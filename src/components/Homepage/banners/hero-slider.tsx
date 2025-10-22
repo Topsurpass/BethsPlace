@@ -68,7 +68,7 @@ const HeroBanner: React.FC<HeroBannerProps> = ({
 	const currentBanner = banners[currentIndex];
 
 	return (
-		<section className="relative flex items-center justify-center overflow-hidden">
+		<section className="relative flex items-center justify-center overflow-hidden rounded-2xl">
 			<div className="absolute inset-0 z-0 ">
 				<Image
 					src={currentBanner.image}

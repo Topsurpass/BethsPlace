@@ -101,7 +101,7 @@ export function PushNotificationManager() {
 	}
 
 	return (
-		<div className="flex flex-col gap-3 p-4 rounded-lg bg-background/50 border border-gray-700">
+		<div className="flex flex-col gap-3 p-4 rounded-lg bg-background/50 ">
 			<div className="flex items-center gap-2">
 				<Bell className="w-4 h-4 text-gold-deep" />
 				<h4 className="font-semibold text-foreground text-sm">Push Notifications</h4>

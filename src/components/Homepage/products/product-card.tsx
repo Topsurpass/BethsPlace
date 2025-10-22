@@ -3,6 +3,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { Button } from '../../ui/button';
 import { ProductProps } from '@/types/products';
+import { formatCurrency } from '@/lib/helpers';
 
 type ProductCardProps = {
 	product: ProductProps;
@@ -14,21 +15,23 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart }) => {
 	const hasDiscount =
 		typeof product.originalPrice === 'number' && product.originalPrice > product.price;
 
-	// Fallback image in case the product image fails to load
-	const fallbackImage =
-		'https://images.unsplash.com/photo-1553062407-98eeb64c6a62?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80';
+	const fallbackImage = '/placeholder.svg';
+
+	const firstImageUrl =
+		!imageError && product.images?.length ? product.images[0].url : fallbackImage;
 
 	return (
 		<div className="group bg-card border rounded-lg overflow-hidden transition-transform duration-300 hover:scale-105">
-			<Link href={`/${product.id}`}>
+			<Link href={`/product/${product.slug}`}>
 				<div className="h-80 relative overflow-hidden">
 					<Image
-						src={imageError ? fallbackImage : product.images[0]}
-						alt={product.name}
+						src={firstImageUrl || fallbackImage}
+						alt={product.images?.[0]?.altText || product.name}
 						fill
 						className="object-cover group-hover:scale-110 transition-transform duration-500"
 						onError={() => setImageError(true)}
 					/>
+
 					{!product.inStock && (
 						<div className="absolute inset-0 bg-black/80 bg-opacity-70 flex items-center justify-center">
 							<span className="text-foreground font-bold text-lg bg-red-600 px-4 py-2 rounded">
@@ -36,7 +39,8 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart }) => {
 							</span>
 						</div>
 					)}
-					{product.tags && product.tags.includes('new') && (
+
+					{product.tags?.some(tag => tag.tag === 'new') && (
 						<div className="absolute top-4 left-4 bg-gold-deep text-black text-xs font-bold px-3 py-1 rounded border dark:border-black">
 							NEW
 						</div>
@@ -51,6 +55,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart }) => {
 							{product.name}
 						</h3>
 					</Link>
+
 					<div className="flex items-center">
 						<svg
 							xmlns="http://www.w3.org/2000/svg"
@@ -66,11 +71,11 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart }) => {
 
 				<div className="flex items-center mb-4">
 					<span className="text-gold-deep text-lg font-bold">
-						₦{product.price.toLocaleString()}
+						{formatCurrency(product.price)}
 					</span>
 					{hasDiscount && (
 						<span className="text-gray-500 text-sm line-through ml-2">
-							₦{(product.originalPrice as number).toLocaleString()}
+							{formatCurrency(product.originalPrice as number)}
 						</span>
 					)}
 				</div>

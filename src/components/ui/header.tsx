@@ -6,10 +6,12 @@ import Image from 'next/image';
 import ThemeToggleButton from './theme-toggle';
 import { useState } from 'react';
 import SearchModal from './search-modal';
+import { useSession } from 'next-auth/react';
 
 export default function Header() {
 	const { getCartItemsCount } = useCart();
 	const [isSearchOpen, setIsSearchOpen] = useState(false);
+	const { status } = useSession();
 
 	return (
 		<header className=" w-full bg-background bg-opacity-90 border-b border">
@@ -22,6 +24,7 @@ export default function Header() {
 								alt="Nigerian Artisan Bags Logo"
 								fill
 								className="object-contain"
+								priority
 							/>
 						</div>
 					</Link>
@@ -46,25 +49,28 @@ export default function Header() {
 								/>
 							</svg>
 						</button>
-						<Link
-							href="/account/profile"
-							className="text-foreground hover:text-gold transition-colors duration-300 relative"
-						>
-							<svg
-								xmlns="http://www.w3.org/2000/svg"
-								className="h-6 w-6"
-								fill="none"
-								viewBox="0 0 24 24"
-								stroke="currentColor"
+						{status === 'authenticated' && (
+							<Link
+								href="/account/profile"
+								className="text-foreground hover:text-gold transition-colors duration-300 relative"
 							>
-								<path
-									strokeLinecap="round"
-									strokeLinejoin="round"
-									strokeWidth={2}
-									d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-								/>
-							</svg>
-						</Link>
+								<svg
+									xmlns="http://www.w3.org/2000/svg"
+									className="h-6 w-6"
+									fill="none"
+									viewBox="0 0 24 24"
+									stroke="currentColor"
+								>
+									<path
+										strokeLinecap="round"
+										strokeLinejoin="round"
+										strokeWidth={2}
+										d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+									/>
+								</svg>
+							</Link>
+						)}
+
 						<Link
 							href="/cart"
 							className="text-foreground hover:text-gold transition-colors duration-300 relative"

@@ -1,11 +1,7 @@
 import type { Metadata } from 'next';
 import { Geist, Geist_Mono } from 'next/font/google';
 import '@/app/globals.css';
-import Header from '@/components/ui/header';
-import Footer from '@/components/ui/footer';
 import Provider from '@/providers';
-import { noticeMessages } from '@/data/mock-notice';
-import TopNoticeBanner from '@/components/Homepage/banners/quick-update-scroll';
 
 const geistSans = Geist({
 	variable: '--font-geist-sans',
@@ -40,20 +36,7 @@ export default function RootLayout({
 				<meta name="theme-color" content="#000000" />
 			</head>
 			<body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-				<Provider>
-					<div className="fixed top-0 left-0 right-0 z-50 bg-gold-deep ">
-						<TopNoticeBanner
-							messages={noticeMessages}
-							scrollSpeed={4}
-							autoDismiss={false}
-						/>
-						<Header />
-					</div>
-
-					{children}
-
-					<Footer />
-				</Provider>
+				<Provider>{children}</Provider>
 			</body>
 		</html>
 	);

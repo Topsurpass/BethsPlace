@@ -1,121 +1,213 @@
+'use client';
+
 import React, { useState } from 'react';
-import SortOptions from '@/components/Homepage/products/sort-options';
 import { Button } from '@/components/ui/button';
+import { X, Sparkles, SlidersHorizontal } from 'lucide-react';
 
 type Category = {
 	id: string | number;
 	name: string;
+	productCount?: number;
+	subcategories?: Category[];
+	description?: string;
 };
 
 interface FilterBarProps {
 	categories: Category[];
-	selectedCategory: string | number;
-	onCategoryChange: (id: string | number) => void;
-	priceRange: [number, number];
-	onPriceRangeChange: (range: [number, number]) => void;
-	maxPrice: number;
-	sortOption: string;
-	onSortChange: (option: string) => void;
+	selectedCategory: string | undefined;
+	onCategoryChange: (id: string | undefined) => void;
+	productCount: number
 }
 
 const HorizontalFilterBar: React.FC<FilterBarProps> = ({
 	categories,
 	selectedCategory,
 	onCategoryChange,
-	priceRange,
-	onPriceRangeChange,
-	maxPrice,
-	sortOption,
-	onSortChange,
+	productCount = 0,
 }) => {
-	const [showPriceFilter, setShowPriceFilter] = useState(false);
+	const [isMobileFiltersOpen, setIsMobileFiltersOpen] = useState(false);
+
 
 	return (
-		<div className="bg-background border p-4 sm:p-6 rounded-lg mb-6">
-			<div className="flex flex-col gap-4 sm:gap-6">
-				<div className="w-full">
-					<h4 className="text-gold-deep font-semibold mb-2 sm:mb-3">Category</h4>
-					<div className="flex flex-wrap gap-2 sm:gap-3">
-						{categories.map(category => (
-							<Button
-								key={category.id}
-								onClick={() => onCategoryChange(category.id)}
-								className={`px-3 py-1 text-sm sm:text-base sm:px-4 sm:py-2 transition-colors duration-300 ${
-									selectedCategory === category.id
-										? 'bg-gold-deep text-background'
-										: 'bg-foreground text-background'
-								}`}
-								size={'sm'}
-								label={category.name}
-							/>
-						))}
-					</div>
+		<div className="w-full">
+			<div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 mb-6">
+				<div className="flex items-center gap-3">
+					<h1 className="text-2xl font-light ">{selectedCategory || 'All Bags'}</h1>
+					<span className="text-sm text-background bg-foreground px-2 py-1 rounded-full">
+						{productCount} pieces
+					</span>
 				</div>
 
-				{/* Price filter, Sort, and Clear Filters */}
-				<div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-					{/* Price filter - Collapsible on mobile */}
-					<div className="w-full sm:w-auto">
-						<Button
-							onClick={() => setShowPriceFilter(!showPriceFilter)}
-							className="sm:hidden w-full flex items-center justify-between bg-gray-800 border border-gold-deep text-gold-deep font-semibold py-2 px-3 mb-3"
-							size={'sm'}
-						>
-							<span>Price Filter</span>
-							<svg
-								xmlns="http://www.w3.org/2000/svg"
-								className={`h-4 w-4 transition-transform ${showPriceFilter ? 'rotate-180' : ''}`}
-								viewBox="0 0 20 20"
-								fill="currentColor"
-							>
-								<path
-									fillRule="evenodd"
-									d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-									clipRule="evenodd"
-								/>
-							</svg>
-						</Button>
-						<div className={`${showPriceFilter ? 'block' : 'hidden'} sm:block w-full`}>
-							<h4 className="text-gold-deep font-semibold mb-2 sm:mb-3">
-								Price Range
-							</h4>
-							<div className="flex flex-col sm:flex-row sm:items-center gap-3">
-								<input
-									type="range"
-									min={0}
-									max={maxPrice}
-									value={priceRange[1]}
-									onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-										onPriceRangeChange([
-											priceRange[0],
-											parseInt(e.target.value, 10),
-										])
-									}
-									className="w-full sm:w-40 h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer"
-								/>
-								<span className="text-foreground text-sm">
-									Up to ₦{priceRange[1].toLocaleString()}
-								</span>
-							</div>
+				{/* Controls */}
+				<div className="flex items-center gap-3">
+					<Button
+						onClick={() => setIsMobileFiltersOpen(true)}
+						variant="outline"
+						size="sm"
+						className="lg:hidden flex items-center gap-2 border-gray-200"
+					>
+						<SlidersHorizontal className="h-4 w-4" />
+						Filters
+						{categories.length > 8 && (
+							<span className="bg-amber-100 text-amber-800 text-xs rounded-full h-5 w-5 flex items-center justify-center">
+								{categories.length}
+							</span>
+						)}
+					</Button>
+				</div>
+			</div>
+
+			{/* Desktop Categories with Advanced Organization */}
+			<div className="hidden lg:block">
+				<div className="rounded-2xl shadow-sm border border-gold-deep p-6">
+					{/* Header with Search and Tabs */}
+					<div className="flex items-center justify-between mb-6">
+						<div className="flex items-center gap-3">
+							<Sparkles className="h-5 w-5 text-amber-600" />
+							<h3 className="text-lg font-semibold ">
+								Browse Collection
+							</h3>
 						</div>
 					</div>
 
-					<div className="w-full sm:w-auto">
-						<SortOptions sortOption={sortOption} onSortChange={onSortChange} />
+					<div className="flex flex-wrap gap-3">
+						<button
+							onClick={() => onCategoryChange(undefined)}
+							className={`flex items-center gap-3 px-4 py-3 rounded-xl border transition-all duration-300 group ${
+								!selectedCategory
+									? 'border-gold-deep  bg-amber-50 text-amber-900 shadow-sm'
+									: 'border-gray-200 bg-white text-gray-700 hover:border-amber-300 hover:bg-amber-25'
+							}`}
+						>
+							<div className="w-2 h-2 rounded-full bg-current opacity-60" />
+							<span className="font-medium">All Collections</span>
+						</button>
+
+						{categories.map(category => (
+							<button
+								key={category.id}
+								onClick={() => onCategoryChange(category.name)}
+								className={`flex items-center gap-3 px-4 py-3 rounded-xl border transition-all duration-300 group ${
+									selectedCategory === category.name
+										? 'border-gold-deep  bg-amber-50 text-amber-900 shadow-sm'
+										: 'border-gray-200 bg-white text-gray-700 hover:border-amber-300 hover:bg-amber-25'
+								}`}
+							>
+								<div className="w-2 h-2 rounded-full bg-current opacity-60" />
+								<span className="font-medium">{category.name}</span>
+								{category.productCount && (
+									<span className="text-sm opacity-75">
+										({category.productCount})
+									</span>
+								)}
+							</button>
+						))}
 					</div>
 
-					<Button
-						onClick={() => {
-							onCategoryChange('all');
-							onPriceRangeChange([0, maxPrice]);
-							onSortChange('featured');
-						}}
-						size={'sm'}
-						className="w-full sm:w-auto px-4 py-2 border border-gold-deep text-gold-deep bg-background rounded-lg hover:bg-gold-deep hover:bg-opacity-10 transition-colors duration-300 text-sm sm:text-base"
-						label="Clear Filters"
-					/>
+					{selectedCategory && (
+						<div className="mt-6 pt-4 border-t border-gray-100">
+							<div className="flex items-center justify-between">
+								<div className="flex items-center gap-3">
+									<span className="text-sm ">Viewing:</span>
+									<span className="bg-amber-100 text-amber-800 px-3 py-2 rounded-full text-sm font-medium flex items-center gap-2">
+										{selectedCategory}
+										<button
+											onClick={() => onCategoryChange(undefined)}
+											className="hover:text-amber-900 transition-colors"
+										>
+											<X className="h-3 w-3" />
+										</button>
+									</span>
+								</div>
+
+							</div>
+						</div>
+					)}
 				</div>
 			</div>
+
+			{/* Mobile Filter Overlay for Many Categories */}
+			{isMobileFiltersOpen && (
+				<div className="fixed inset-0 z-50 lg:hidden">
+					<div
+						className="absolute inset-0 bg-black bg-opacity-50"
+						onClick={() => setIsMobileFiltersOpen(false)}
+					/>
+					<div className="absolute right-0 top-0 h-full w-80 bg-white shadow-xl overflow-y-auto">
+						<div className="p-4 border-b border-gray-200 sticky top-0 bg-white">
+							<div className="flex items-center justify-between mb-4">
+								<h3 className="text-lg font-semibold text-gray-900">Categories</h3>
+								<Button
+									onClick={() => setIsMobileFiltersOpen(false)}
+									variant="ghost"
+									size="sm"
+								>
+									<X className="h-5 w-5" />
+								</Button>
+							</div>
+						</div>
+
+						<div className="p-4 space-y-3">
+							{/* All Products Mobile */}
+							<button
+								onClick={() => {
+									onCategoryChange(undefined);
+									setIsMobileFiltersOpen(false);
+								}}
+								className={`w-full p-4 rounded-xl border-2 text-left transition-all ${
+									!selectedCategory
+										? 'border-gold-deep  bg-amber-50'
+										: 'border-gray-200 bg-gray-50'
+								}`}
+							>
+								<div className="flex items-center justify-between">
+									<div>
+										<h4 className="font-semibold text-gray-900">All Bags</h4>
+										<p className="text-sm text-gray-600 mt-1">
+											{productCount} pieces
+										</p>
+									</div>
+									{!selectedCategory && (
+										<Sparkles className="h-4 w-4 text-amber-600" />
+									)}
+								</div>
+							</button>
+
+							{/* Categories Mobile with Search */}
+							{categories.map(category => (
+								<button
+									key={category.id}
+									onClick={() => {
+										onCategoryChange(category.name);
+										setIsMobileFiltersOpen(false);
+									}}
+									className={`w-full p-4 rounded-xl border-2 text-left transition-all ${
+										selectedCategory === category.name
+											? 'border-gold-deep  bg-amber-50'
+											: 'border-gray-200 bg-gray-50'
+									}`}
+								>
+									<div className="flex items-center justify-between">
+										<div>
+											<h4 className="font-semibold text-gray-900">
+												{category.name}
+											</h4>
+											{category.productCount && (
+												<p className="text-sm text-gray-600 mt-1">
+													{category.productCount} items
+												</p>
+											)}
+										</div>
+										{selectedCategory === category.name && (
+											<Sparkles className="h-4 w-4 text-amber-600" />
+										)}
+									</div>
+								</button>
+							))}
+						</div>
+					</div>
+				</div>
+			)}
 		</div>
 	);
 };

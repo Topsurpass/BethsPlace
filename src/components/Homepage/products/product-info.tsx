@@ -105,21 +105,15 @@ const ProductInfo: React.FC<ProductInfoProps> = ({
 				label={product.inStock ? 'Add to Cart' : 'Out of Stock'}
 			/>
 
-			{/* <Button
-				className="w-full py-4 border-2 bg-gray border-gold-deep text-gold-deep rounded-lg font-bold text-lg hover:bg-gold hover:bg-opacity-10 transition-colors duration-300"
-				label="Buy Now"
-				disabled={!product.inStock}
-			/> */}
-
 			{product.tags && product.tags.length > 0 && (
 				<div className="mt-8">
 					<span className="text-gray-400 mr-2">Tags:</span>
 					{product.tags.map((tag, index) => (
 						<span
-							key={index}
+							key={tag.id ?? index}
 							className="inline-block bg-gray-800 text-gold-deep text-sm px-3 py-1 rounded-full mr-2 mb-2"
 						>
-							{tag}
+							{typeof tag === 'string' && tag}
 						</span>
 					))}
 				</div>

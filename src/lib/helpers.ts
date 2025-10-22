@@ -1,3 +1,6 @@
+// utils/generateSlug.ts
+import { prisma } from '@/lib/prisma';
+
 export function formatDateTime(isoDate: string): string {
 	const date = new Date(isoDate);
 	const now = new Date();
@@ -208,3 +211,19 @@ export const fileToBase64 = (file: File): Promise<string> => {
 		reader.onerror = error => reject(error);
 	});
 };
+
+export async function generateUniqueSlug(name: string): Promise<string> {
+	const baseSlug = name
+		.toLowerCase()
+		.trim()
+		.replace(/[^a-z0-9]+/g, '-');
+	let uniqueSlug = baseSlug;
+	let count = 1;
+
+	// Ensure uniqueness in DB
+	while (await prisma.product.findUnique({ where: { slug: uniqueSlug } })) {
+		uniqueSlug = `${baseSlug}-${count++}`;
+	}
+
+	return uniqueSlug;
+}

@@ -89,38 +89,10 @@ export default function Footer() {
 
 					<div className="flex-1 max-w-md">
 						<PushNotificationManager />
-						{/*<h3 className="text-foreground text-lg font-semibold mb-4">Stay Updated</h3>
-						<p className="foreground mb-4">
-							Subscribe to our newsletter for exclusive offers and new product
-							announcements.
-						</p>
-
-						{isSubscribed ? (
-							<div className="bg-foreground/20 border border-green-800 text-green-400 px-4 py-3 rounded-lg">
-								Thank you for subscribing! Check your email for confirmation.
-							</div>
-						) : (
-							<form onSubmit={handleSubscribe} className="flex gap-2">
-								<input
-									type="email"
-									value={email}
-									onChange={e => setEmail(e.target.value)}
-									placeholder="Enter your email"
-									className="flex-1 bg-background border border-gray-700 rounded-lg px-4 py-2 text-foreground placeholder-gray-500 focus:ring-2 focus:ring-gold focus:border-transparent"
-									required
-								/>
-								<button
-									type="submit"
-									className="bg-gold-deep text-foreground font-medium px-4 py-2 rounded-lg hover:bg-gold-light transition-colors duration-300"
-								>
-									Subscribe
-								</button>
-							</form>
-						)}*/}
 					</div>
 				</div>
 
-				<div className="border-t mt-8 pt-8 flex flex-col md:flex-row justify-between items-center">
+				<div className="border-t mt-8 pt-5 flex flex-col md:flex-row justify-between items-center">
 					<div className="text-center md:text-left">
 						<p className="text-foreground text-sm">
 							© {new Date().getFullYear()} Beths Place. All rights reserved.
